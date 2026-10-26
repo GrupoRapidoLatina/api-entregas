@@ -1,0 +1,39 @@
+services:
+  test:
+    build:
+      context: .
+      target: test
+    image: rapido-entregas-api-test
+    container_name: rapido-entregas-api-test
+    environment:
+      NODE_ENV: test
+      JWT_SECRET: test-secret
+    restart: "no"
+
+  api:
+    build:
+      context: .
+      target: runtime
+    depends_on:
+      test:
+        condition: service_completed_successfully
+    container_name: rapido-entregas-api
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3000}:3000"
+    env_file:
+      - .env
+    volumes:
+      - ./.secrets:/app/.secrets:ro
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/health').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s

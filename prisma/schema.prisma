@@ -1,0 +1,211 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum DeviceType {
+  ios
+  android
+}
+
+model User {
+  userId            Int         @id @default(autoincrement()) @map("user_id")
+  firstname         String      @db.VarChar(255)
+  lastname          String?     @db.VarChar(255)
+  email             String      @db.VarChar(255)
+  phone             String?     @db.VarChar(50)
+  password          String      @db.VarChar(255)
+  userType          Int?        @map("user_type")
+  dob               String?     @db.VarChar(50)
+  vehicleType       String?     @map("vehicle_type") @db.VarChar(100)
+  profileImage      String?     @map("profile_image") @db.Text
+  deviceToken       String?     @map("device_token") @db.VarChar(255)
+  deviceType        DeviceType? @map("device_type")
+  vehicleNo         String? @map("vehicle_no") @db.VarChar(255)
+  companyName       String? @map("company_name") @db.VarChar(255)
+  licenceImageFront String? @map("licence_image_front") @db.VarChar(255)
+  licenceImageBack  String? @map("licence_image_back") @db.VarChar(255)
+  suburb            String? @db.VarChar(100)
+  postcode          String? @db.VarChar(100)
+  state             String? @db.VarChar(100)
+  countryName       String? @map("country_name") @db.VarChar(255)
+  streetName        String? @map("street_name") @db.VarChar(255)
+  houseNo           String? @map("house_no") @db.VarChar(255)
+  vehicleRegNo      String? @map("vehicle_reg_no") @db.VarChar(255)
+  countryCode       String? @map("country_code") @db.VarChar(255)
+  userStatus        Int?    @map("user_status")
+  loginStatus       String? @map("login_status") @db.VarChar(255)
+  latitude          String? @db.VarChar(255)
+  longitude         String? @db.VarChar(255)
+  socialId          String? @map("social_id") @db.VarChar(255)
+  socialType        String? @map("social_type") @db.VarChar(255)
+  verify            String? @db.VarChar(255)
+  regType           String? @map("reg_type") @db.VarChar(255)
+  idOperacao        Int?    @map("id_operacao")
+  forgetTime        String? @map("forget_timestamp") @db.VarChar(255)
+
+  @@map("user")
+}
+
+model Order {
+  id                 Int       @id @default(autoincrement())
+  orderId            String    @map("order_id") @db.VarChar(25)
+  userId             Int       @map("user_id")
+  driverId           Int       @default(0) @map("driver_id")
+  idOperacao         Int       @map("id_operacao")
+  idIntegracao       Int?      @map("id_integracao")
+  pickupComapnyName  String?   @map("pickup_comapny_name") @db.VarChar(100)
+  pickupFirstName    String?   @map("pickup_first_name") @db.VarChar(100)
+  pickupLastName     String?   @map("pickup_last_name") @db.VarChar(255)
+  pickupMobNumber    String?   @map("pickup_mob_number") @db.VarChar(15)
+  pickupaddress      String?   @db.VarChar(255)
+  pickupLat          String?   @map("pickup_lat") @db.VarChar(60)
+  pickupLong         String?   @map("pickup_long") @db.VarChar(60)
+  pickupSpecialInst  String?   @map("pickup_special_inst") @db.VarChar(255)
+  pickupCountryCode  String?   @map("pickup_country_code") @db.VarChar(255)
+  itemDescription    String?   @map("item_description") @db.VarChar(255)
+  itemQuantity       String?   @map("item_quantity") @db.VarChar(255)
+  deliveryDate       DateTime? @map("delivery_date") @db.Date
+  deliveryTime       String?   @map("delivery_time") @db.VarChar(255)
+  dropoffFirstName   String?   @map("dropoff_first_name") @db.VarChar(255)
+  dropoffLastName    String?   @map("dropoff_last_name") @db.VarChar(255)
+  dropoffMobNumber   String?   @map("dropoff_mob_number") @db.VarChar(255)
+  dropoffSpecialInst String?   @map("dropoff_special_inst") @db.VarChar(255)
+  dropoffaddress     String?   @db.VarChar(255)
+  dropoffLat         String?   @map("dropoff_lat") @db.VarChar(60)
+  dropoffLong        String?   @map("dropoff_long") @db.VarChar(60)
+  dropoffComapnyName String?   @map("dropoff_comapny_name") @db.VarChar(255)
+  dropoffCountryCode String?   @map("dropoff_country_code") @db.VarChar(255)
+  parcelHeight       String?   @map("parcel_height") @db.VarChar(255)
+  parcelWidth        String?   @map("parcel_width") @db.VarChar(255)
+  parcelLenght       String?   @map("parcel_lenght") @db.VarChar(255)
+  parcelWeight       String?   @map("parcel_weight") @db.VarChar(255)
+  deliveryDistance   String?   @map("delivery_distance") @db.VarChar(255)
+  deliveryStatus     Int?      @map("delivery_status") @db.TinyInt
+  deliveryCost       String?   @map("delivery_cost") @db.VarChar(10)
+  driverDeliveryCost String?   @map("driver_delivery_cost") @db.VarChar(255)
+  vehicleType        String?   @map("vehicle_type") @db.VarChar(100)
+  deliveryType       String?   @map("delivery_type") @db.VarChar(100)
+  signatureName      String?   @map("signature_name") @db.VarChar(255)
+  signatureImage     String?   @map("signature_image") @db.Text
+  receivedUserImage  String?   @map("received_user_image") @db.Text
+  latitudeFoto       String?   @map("latitude_foto") @db.VarChar(60)
+  longitudeFoto      String?   @map("longitude_foto") @db.VarChar(60)
+  updateLat          String?   @map("update_lat") @db.VarChar(60)
+  updateLon          String?   @map("update_lon") @db.VarChar(60)
+  insucessoLat       String?   @map("insucesso_lat") @db.VarChar(60)
+  insucessoLon       String?   @map("insucesso_lon") @db.VarChar(60)
+  dataEntregue       DateTime? @map("data_entregue") @db.Date
+  createdAt          DateTime? @default(now()) @map("created_at") @db.Timestamp(0)
+  nfNumero           String?   @map("nf_numero") @db.VarChar(255)
+  nfChave            String    @map("nf_chave") @db.VarChar(255)
+  pdfUrl             String?   @map("pdf_url") @db.VarChar(255)
+  status             String?   @db.VarChar(10)
+
+  @@map("orders")
+}
+
+model OrderHistorico {
+  id          Int      @id @default(autoincrement())
+  idEntrega   Int      @map("id_entrega")
+  idOperacao  Int      @map("id_operacao")
+  idUsuario   Int      @map("id_usuario")
+  idMotorista Int?     @map("id_motorista")
+  idStatus    Int      @map("id_status")
+  dataOco     DateTime @map("data_oco") @db.DateTime(0)
+  dataCad     DateTime @default(now()) @map("data_cad") @db.DateTime(0)
+  ocorrencia  String   @db.Text
+  obs         String?  @db.Text
+  lat         String?  @db.VarChar(100)
+  lon         String?  @db.VarChar(100)
+  imagem      String?  @db.Text
+
+  @@map("order_historico")
+}
+
+model Notification {
+  id         Int    @id @default(autoincrement())
+  orderId    Int    @map("order_id")
+  fromUserId Int    @map("from_user_id")
+  toUserId   Int    @map("to_user_id")
+  message    String @db.Text
+  type       String @db.VarChar(100)
+
+  @@map("notifications")
+}
+
+model Review {
+  id             Int      @id
+  customerId     Int      @map("customer_id")
+  driverId       Int      @map("driver_id")
+  message        String   @db.Text
+  createdDate    DateTime @default(now()) @map("created_date") @db.Timestamp(0)
+  orderId        Int      @map("order_id")
+  driverRatting  String   @db.VarChar(255)
+  feedback       String   @db.VarChar(255)
+  serviceRatting String   @db.VarChar(255)
+
+  @@map("review")
+}
+
+model DriverReport {
+  id        Int     @id @default(autoincrement())
+  idEntrega Int?    @map("id_entrega")
+  orderId   String? @map("order_id") @db.VarChar(25)
+  comment   String? @db.Text
+  driverId  Int?    @map("driver_id")
+  message   String? @db.Text
+  geoLat    String? @map("geo_lat") @db.VarChar(60)
+  geoLon    String? @map("geo_lon") @db.VarChar(60)
+  imagem    String? @db.VarChar(255)
+  nfNumero  String? @map("nf_numero") @db.VarChar(44)
+
+  @@map("driver_report")
+}
+
+model Status {
+  codigo      Int     @id
+  macroStatus String? @map("macro_status") @db.VarChar(255)
+  microStatus String? @map("micro_status") @db.VarChar(255)
+  ativo       String? @db.Char(1)
+  finalizador String? @db.Char(1)
+
+  @@map("status")
+}
+
+model Operacao {
+  codigo         Int     @id @default(autoincrement())
+  razao          String? @db.VarChar(255)
+  cgc            String? @db.VarChar(25)
+  ativo          String? @db.Char(1)
+  tipoTransporte Int     @default(1) @map("tipo_transporte")
+
+  @@map("operacao")
+}
+
+model Setting {
+  id               Int     @id
+  m2hour           String? @map("m_2hour") @db.VarChar(255)
+  m4hour           String? @map("m_4hour") @db.VarChar(255)
+  mSameday         String? @map("m_sameday") @db.VarChar(255)
+  c2hour           String? @map("c_2hour") @db.VarChar(255)
+  c4hour           String? @map("c_4hour") @db.VarChar(255)
+  cSameday         String? @map("c_sameday") @db.VarChar(255)
+  v2hour           String? @map("v_2hour") @db.VarChar(255)
+  v4hour           String? @map("v_4hour") @db.VarChar(255)
+  vSameday         String? @map("v_sameday") @db.VarChar(255)
+  t2hour           String? @map("t_2hour") @db.VarChar(255)
+  t4hour           String? @map("t_4hour") @db.VarChar(255)
+  tSameday         String? @map("t_sameday") @db.VarChar(255)
+  driverPercentage String? @map("driver_percentage") @db.VarChar(255)
+  endtime4hour     String? @map("endtime_4hour") @db.VarChar(255)
+  endtimeSameday   String? @map("endtime_sameday") @db.VarChar(255)
+  pDMinCharge      String? @map("p_d_min_charge") @db.VarChar(255)
+
+  @@map("setting")
+}

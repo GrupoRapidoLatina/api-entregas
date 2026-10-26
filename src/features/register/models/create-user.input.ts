@@ -1,0 +1,31 @@
+
+export type CreateUserInput = {
+  verify?: string | null;
+  firstname: string;
+  lastname?: string | null;
+  email: string;
+  phone?: string | null;
+  password: string;
+  userType?: number | null;
+  dob?: string | null;
+  vehicleType?: string | null;
+  profileImage?: string | null;
+  deviceToken?: string | null;
+  houseNo?: string | null;
+  countryCode?: string | null;
+  streetName?: string | null;
+  countryName?: string | null;
+  vehicleNo?: string | null;
+  state?: string | null;
+  socialType?: string | null;
+  socialId?: string | null;
+  postcode?: string | null;
+  suburb?: string | null;
+  companyName?: string | null;
+  idOperacao?: number | null;
+  licenceImageFront?: string | null;
+  licenceImageBack?: string | null;
+  vehicleRegNo?: string | null;
+  userStatus?: number | null;
+  loginStatus?: string | null;
+};

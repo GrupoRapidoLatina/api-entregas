@@ -1,0 +1,35 @@
+node_modules
+dist/
+coverage/
+*.log
+.DS_Store
+
+# Env
+.env
+.env.*
+
+# Docs locais
+docs/
+
+# Segredos / chaves
+secrets/*
+!secrets/.gitkeep
+.secrets/*
+!.secrets/.gitkeep
+*.pem
+*.p12
+*.p8
+*.key
+credentials.json
+*serviceAccount*.json
+*service-account*.json
+*firebase-adminsdk*.json
+
+/generated/prisma
+*.tsbuildinfo
+
+.agents/
+.claude/
+.cursor/
+.windsurf/
+skills-lock.json
