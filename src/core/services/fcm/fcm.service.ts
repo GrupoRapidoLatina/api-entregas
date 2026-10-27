@@ -14,7 +14,7 @@ export class FcmService implements OnModuleInit {
     this.app = this.createApp();
     if (!this.app) {
       this.logger.warn(
-        'FCM desligado — configure FCM_SERVICE_ACCOUNT_PATH (ou JSON) no .env. Ver docs/FCM.md',
+        'FCM desligado — configure FCM_SERVICE_ACCOUNT_JSON no .env. Ver docs/FCM.md',
       );
       return;
     }

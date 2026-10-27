@@ -12,10 +12,6 @@ coverage/
 docs/
 
 # Segredos / chaves
-secrets/*
-!secrets/.gitkeep
-.secrets/*
-!.secrets/.gitkeep
 *.pem
 *.p12
 *.p8
