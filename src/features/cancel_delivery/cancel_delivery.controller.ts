@@ -40,6 +40,8 @@ export class CancelDeliveryController {
     const userType = await this.getUserTypeUseCase.call(user.userId);
     const isCustomer = userType === UserType.Customer;
     const order = await this.repository.findOrderByOrderId(orderId);
+    const previousDriverId = order?.driverId || undefined;
+    const previousCustomerId = order?.userId || undefined;
 
     if (isCustomer) {
       await this.cancelAsCustomerUseCase.call(orderId, user.userId);
@@ -47,9 +49,7 @@ export class CancelDeliveryController {
       await this.cancelAsDriverUseCase.call(orderId, user.userId);
     }
 
-    const toUserId = isCustomer
-      ? order?.driverId || undefined
-      : order?.userId || undefined;
+    const toUserId = isCustomer ? previousDriverId : previousCustomerId;
 
     if (isCustomer && order) {
       await this.createCancelNotificationUseCase.call({

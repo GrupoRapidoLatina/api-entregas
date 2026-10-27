@@ -26,6 +26,13 @@ describe('DeliveryDetailController', () => {
         parcelWeight: '2,00 kg',
       }),
     );
+    ctx.db.reports.push({
+      id: 1,
+      idEntrega: 4,
+      message: 'DESTINATÁRIO AUSENTE',
+      comment: 'Ninguém atendeu o interfone',
+      imagem: null,
+    });
 
     const response = await request(ctx.app.getHttpServer())
       .post('/ApiController/deliveryDetail')
@@ -43,6 +50,11 @@ describe('DeliveryDetailController', () => {
         parcel_width: '0,80 cm',
         parcel_lenght: '0,40 cm',
         parcel_weight: '2,00 kg',
+        driver_report: {
+          message: 'DESTINATÁRIO AUSENTE',
+          comment: 'Ninguém atendeu o interfone',
+          imagem: null,
+        },
       }),
     );
   });

@@ -21,8 +21,20 @@ export class DeliveryDetailUseCase {
         : await this.repository.findByOrderId(rawId);
 
     if (!order) throw new NotFoundException('Please enter valid user id !');
+
+    const report = await this.repository.findLatestReportByEntregaId(order.id);
+
     return ok({
-      deliverydata: toOrderResponse(order),
+      deliverydata: {
+        ...toOrderResponse(order),
+        driver_report: report
+          ? {
+              message: report.message ?? null,
+              comment: report.comment ?? null,
+              imagem: report.imagem ?? null,
+            }
+          : null,
+      },
     });
   }
 }

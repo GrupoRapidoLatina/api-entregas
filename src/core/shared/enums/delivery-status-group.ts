@@ -21,5 +21,7 @@ export const DeliveryStatusGroup = {
     DeliveryStatus.Delivered,
     DeliveryStatus.InProgress,
     DeliveryStatus.Legacy8,
+    DeliveryStatus.PedidoCancelado,
+    DeliveryStatus.TransporteCancelado,
   ],
 } as const;

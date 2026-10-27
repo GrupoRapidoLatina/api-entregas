@@ -245,6 +245,17 @@ export function createMemoryPrisma() {
       },
     },
     driverReport: {
+      findFirst: async ({
+        where,
+        orderBy,
+      }: {
+        where?: Row;
+        orderBy?: Record<string, 'asc' | 'desc'>;
+      }) =>
+        sortRows(
+          db.reports.filter((row) => matches(row, where)),
+          orderBy,
+        )[0] ?? null,
       create: async ({ data }: { data: Row }) => {
         db.reports.push({ ...data });
         return data;

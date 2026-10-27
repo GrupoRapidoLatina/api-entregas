@@ -32,7 +32,7 @@ describe('PickupDeliveryController', () => {
       .send({ id: 4 });
 
     expect(response.status).toBe(201);
-    expect(ctx.db.orders[0]?.deliveryStatus).toBe(DeliveryStatus.Accepted);
+    expect(ctx.db.orders[0]?.deliveryStatus).toBe(DeliveryStatus.InProgress);
     expect(ctx.db.historicos[0]).toEqual(
       expect.objectContaining({ ocorrencia: 'COLETA REALIZADA' }),
     );

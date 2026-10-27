@@ -12,4 +12,11 @@ export class DeliveryDetailRepository {
   findByOrderId(orderId: string) {
     return this.prisma.order.findFirst({ where: { orderId } });
   }
+
+  findLatestReportByEntregaId(idEntrega: number) {
+    return this.prisma.driverReport.findFirst({
+      where: { idEntrega },
+      orderBy: { id: 'desc' },
+    });
+  }
 }

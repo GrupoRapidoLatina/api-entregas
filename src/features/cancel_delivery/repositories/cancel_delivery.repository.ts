@@ -21,14 +21,14 @@ export class CancelDeliveryRepository {
   cancelAsCustomer(orderId: string, userId: number) {
     return this.prisma.order.updateMany({
       where: { orderId, userId },
-      data: { deliveryStatus: DeliveryStatus.Waiting },
+      data: { deliveryStatus: DeliveryStatus.PedidoCancelado, driverId: 0 },
     });
   }
 
   cancelAsDriver(orderId: string, userId: number) {
     return this.prisma.order.updateMany({
       where: { orderId, driverId: userId },
-      data: { deliveryStatus: DeliveryStatus.Waiting },
+      data: { deliveryStatus: DeliveryStatus.Available, driverId: 0 },
     });
   }
 

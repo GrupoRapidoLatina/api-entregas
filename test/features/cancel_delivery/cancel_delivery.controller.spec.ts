@@ -35,7 +35,10 @@ describe('CancelDeliveryController', () => {
       .send({ order_id: '4' });
 
     expect(response.status).toBe(201);
-    expect(ctx.db.orders[0]?.deliveryStatus).toBe(DeliveryStatus.Waiting);
+    expect(ctx.db.orders[0]?.deliveryStatus).toBe(
+      DeliveryStatus.PedidoCancelado,
+    );
+    expect(ctx.db.orders[0]?.driverId).toBe(0);
     expect(ctx.db.notifications).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ toUserId: 7, type: 'cancel' }),

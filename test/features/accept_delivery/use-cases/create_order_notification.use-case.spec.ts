@@ -14,7 +14,8 @@ describe('CreateOrderNotificationUseCase', () => {
       orderId: 4,
       fromUserId: 8,
       toUserId: 7,
-      message: 'O motorista foi atribuído ao seu pedido',
+      message:
+        'Seu pedido foi aceito! Um motoboy já está a caminho da coleta.',
       type: 'accept',
     };
 

@@ -18,7 +18,7 @@ export class PickupDeliveryRepository {
   updatePickup(id: number, userId: number) {
     return this.prisma.order.update({
       where: { id },
-      data: { driverId: userId, deliveryStatus: DeliveryStatus.Accepted },
+      data: { driverId: userId, deliveryStatus: DeliveryStatus.InProgress },
     });
   }
 

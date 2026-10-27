@@ -41,7 +41,8 @@ export class AcceptDeliveryController {
       orderId: profiledata.id,
       fromUserId: user.userId,
       toUserId: profiledata.userId ?? undefined,
-      message: 'O motorista foi atribuído ao seu pedido',
+      message:
+        'Seu pedido foi aceito! Um motoboy já está a caminho da coleta.',
       type: NotificationType.Accept,
     });
 
@@ -49,7 +50,7 @@ export class AcceptDeliveryController {
       const customer = await this.findCustomerUseCase.call(profiledata.userId);
       await this.fcm.push(
         customer?.deviceToken,
-        'O driver foi atribuído ao seu pedido.',
+        'Seu pedido foi aceito! Um motoboy já está a caminho da coleta.',
         {
           delivery_id: profiledata.id,
           order_id: profiledata.orderId ?? profiledata.id,
