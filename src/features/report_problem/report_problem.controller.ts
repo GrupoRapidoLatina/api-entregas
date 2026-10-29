@@ -20,7 +20,6 @@ import { memoryStorage } from 'multer';
 import { CurrentUser } from '../../core/auth/decorators/current-user.decorator';
 import type { AuthUser } from '../../core/auth/models/auth-user.model';
 import { SessionAuthService } from '../../core/auth/services/session-auth.service';
-import { FileUploadService } from '../../core/services/file-upload/file-upload.service';
 import { FcmService } from '../../core/services/fcm/fcm.service';
 import { ok } from '../../core/http/api-response';
 import { FindOrderUseCase } from './use-cases/find_order.use-case';
@@ -30,6 +29,7 @@ import { MarkOrderAfterReportUseCase } from './use-cases/mark_order_after_report
 import { CreateReportHistoricoUseCase } from './use-cases/create_report_historico.use-case';
 import { FindCustomerUseCase } from './use-cases/find_customer.use-case';
 import { ChangeReportProblemStatusUseCase } from './use-cases/change_report_problem_status.use-case';
+import { UploadReportImageUseCase } from './use-cases/upload_report_image.use-case';
 import { ReportProblemDto } from './dto/report_problem.dto';
 import { ChangeReportProblemStatusDto } from './dto/change_report_problem_status.dto';
 
@@ -46,10 +46,10 @@ export class ReportProblemController {
     private readonly createReportHistoricoUseCase: CreateReportHistoricoUseCase,
     private readonly findCustomerUseCase: FindCustomerUseCase,
     private readonly changeReportProblemStatusUseCase: ChangeReportProblemStatusUseCase,
-    private readonly fileUpload: FileUploadService,
+    private readonly uploadReportImageUseCase: UploadReportImageUseCase,
     private readonly fcm: FcmService,
     private readonly sessionAuth: SessionAuthService,
-  ) { }
+  ) {}
 
   @Post('reportProblem')
   @ApiOperation({ summary: 'Relata um problema na entrega' })
@@ -95,12 +95,6 @@ export class ReportProblemController {
     const geoLat = dto.lat ?? '';
     const geoLon = dto.lon ?? '';
     const now = new Date();
-    const imagePath =
-      (await this.fileUpload.uploadMulterFile(
-        files?.report_image?.[0],
-        dto.image_path ?? '',
-        String(user.userId),
-      )) || (dto.image_path ?? '');
 
     const order = await this.findOrderUseCase.call(id);
     if (order.idOperacao == null) {
@@ -108,6 +102,13 @@ export class ReportProblemController {
         'id_operacao é obrigatório. Pedido sem operação cadastrada.',
       );
     }
+
+    const imagePath = await this.uploadReportImageUseCase.call({
+      orderId: id,
+      nfNumero: dto.nfnumero || order.nfNumero,
+      file: files?.report_image?.[0],
+      fallbackPath: dto.image_path,
+    });
 
     const { orderDeliveryStatus, historicoStatusCodigo, statusTexto } =
       await this.resolveReportStatusUseCase.call(message);
@@ -130,6 +131,7 @@ export class ReportProblemController {
       insucessoLon: geoLon,
       updateLat: geoLat,
       updateLon: geoLon,
+      ...(imagePath ? { updateImagem: imagePath } : {}),
     });
 
     await this.createReportHistoricoUseCase.call({

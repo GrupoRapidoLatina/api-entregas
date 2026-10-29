@@ -35,4 +35,12 @@ export class DeliverOrderDto {
   @IsString()
   @IsOptional()
   received_user_image?: string;
+
+  @IsString()
+  @IsOptional()
+  validacao_id?: string;
+
+  @IsString()
+  @IsOptional()
+  assinatura_comprovante?: string;
 }

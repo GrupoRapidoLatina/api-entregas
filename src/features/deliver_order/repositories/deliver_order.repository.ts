@@ -22,6 +22,7 @@ export class DeliverOrderRepository {
     id: number,
     data: {
       receivedUserImage?: string;
+      updateImagem?: string;
       signatureImage?: string;
       signatureName: string;
       latitudeFoto: string;
@@ -36,6 +37,7 @@ export class DeliverOrderRepository {
       where: { id },
       data: {
         receivedUserImage: data.receivedUserImage,
+        updateImagem: data.updateImagem,
         signatureImage: data.signatureImage,
         signatureName: data.signatureName,
         latitudeFoto: data.latitudeFoto,

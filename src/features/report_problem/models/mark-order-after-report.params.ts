@@ -6,4 +6,5 @@ export type MarkOrderAfterReportParams = {
   insucessoLon: string;
   updateLat: string;
   updateLon: string;
+  updateImagem?: string;
 };

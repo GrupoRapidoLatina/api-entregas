@@ -10,6 +10,7 @@ export class MarkOrderDeliveredUseCase {
     id: number,
     data: {
       receivedUserImage?: string;
+      updateImagem?: string;
       signatureImage?: string;
       signatureName: string;
       latitudeFoto: string;

@@ -3,10 +3,23 @@ import { FileUploadService } from './file-upload/file-upload.service';
 import { PdfService } from './pdf/pdf.service';
 import { FcmService } from './fcm/fcm.service';
 import { MailService } from './mail/mail.service';
+import { ComprovanteService } from './comprovante/comprovante.service';
 
 @Global()
 @Module({
-  providers: [FileUploadService, PdfService, FcmService, MailService],
-  exports: [FileUploadService, PdfService, FcmService, MailService],
+  providers: [
+    FileUploadService,
+    PdfService,
+    FcmService,
+    MailService,
+    ComprovanteService,
+  ],
+  exports: [
+    FileUploadService,
+    PdfService,
+    FcmService,
+    MailService,
+    ComprovanteService,
+  ],
 })
-export class InfraModule { }
+export class InfraModule {}

@@ -96,6 +96,7 @@ model Order {
   receivedUserImage  String?   @map("received_user_image") @db.Text
   latitudeFoto       String?   @map("latitude_foto") @db.VarChar(60)
   longitudeFoto      String?   @map("longitude_foto") @db.VarChar(60)
+  updateImagem       String?   @map("update_imagem") @db.Text
   updateLat          String?   @map("update_lat") @db.VarChar(60)
   updateLon          String?   @map("update_lon") @db.VarChar(60)
   insucessoLat       String?   @map("insucesso_lat") @db.VarChar(60)

@@ -1,8 +1,28 @@
-import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  BadRequestException,
+  Body,
+  ConflictException,
+  Controller,
+  Post,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiExtraModels,
+  ApiOperation,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer';
 import { CurrentUser } from '../../core/auth/decorators/current-user.decorator';
 import type { AuthUser } from '../../core/auth/models/auth-user.model';
 import { SessionAuthService } from '../../core/auth/services/session-auth.service';
+import { COMPROVANTE_MAX_BYTES } from '../../core/config/comprovante.config';
+import { isFinalizedDelivery } from '../../core/helpers/is-finalized-delivery.helper';
 import { FcmService } from '../../core/services/fcm/fcm.service';
 import { ok } from '../../core/http/api-response';
 import { NotificationType } from '../../core/shared/enums/notification-type.enum';
@@ -13,10 +33,13 @@ import { CreateDeliveryHistoricoUseCase } from './use-cases/create_delivery_hist
 import { CreateDeliveryNotificationUseCase } from './use-cases/create_delivery_notification.use-case';
 import { FindCustomerUseCase } from './use-cases/find_customer.use-case';
 import { FindDriverDeliveryAlertUseCase } from './use-cases/find_driver_delivery_alert.use-case';
+import { UploadComprovanteImageUseCase } from './use-cases/upload_comprovante_image.use-case';
+import { VerificarAssinaturaComprovanteUseCase } from './use-cases/verificar_assinatura_comprovante.use-case';
 import { DeliverOrderDto } from './dto/deliver_order.dto';
 
 @ApiTags('Entrega')
 @ApiBearerAuth()
+@ApiExtraModels(DeliverOrderDto)
 @Controller()
 export class DeliverOrderController {
   constructor(
@@ -27,13 +50,44 @@ export class DeliverOrderController {
     private readonly createDeliveryNotificationUseCase: CreateDeliveryNotificationUseCase,
     private readonly findCustomerUseCase: FindCustomerUseCase,
     private readonly findDriverDeliveryAlertUseCase: FindDriverDeliveryAlertUseCase,
+    private readonly verificarAssinaturaComprovanteUseCase: VerificarAssinaturaComprovanteUseCase,
+    private readonly uploadComprovanteImageUseCase: UploadComprovanteImageUseCase,
     private readonly fcm: FcmService,
     private readonly sessionAuth: SessionAuthService,
-  ) { }
+  ) {}
 
   @Post('deliverOrder')
   @ApiOperation({ summary: 'Confirma a entrega do pedido' })
-  async deliver(@CurrentUser() user: AuthUser, @Body() dto: DeliverOrderDto) {
+  @ApiConsumes('multipart/form-data', 'application/json')
+  @ApiBody({
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(DeliverOrderDto) },
+        {
+          type: 'object',
+          properties: {
+            received_user_image_file: {
+              type: 'string',
+              format: 'binary',
+              description: 'Foto do comprovante (ocorrência 5)',
+            },
+          },
+        },
+      ],
+    },
+  })
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [{ name: 'received_user_image_file', maxCount: 1 }],
+      { storage: memoryStorage(), limits: { fileSize: COMPROVANTE_MAX_BYTES } },
+    ),
+  )
+  async deliver(
+    @CurrentUser() user: AuthUser,
+    @Body() dto: DeliverOrderDto,
+    @UploadedFiles()
+    files?: { received_user_image_file?: Express.Multer.File[] },
+  ) {
     await this.sessionAuth.requireActiveUser(user.userId);
 
     const id = dto.id;
@@ -42,15 +96,39 @@ export class DeliverOrderController {
     const longitudeFoto = dto.longitude_foto ?? '';
     const statusEntregue = dto.status_entregue ?? '';
     const signatureImage = dto.signature_image?.trim() || null;
-    const clientImage = dto.received_user_image?.trim() || null;
     const now = new Date();
     const date = now.toISOString().slice(0, 10);
+    const file = files?.received_user_image_file?.[0];
+
+    const existing = await this.findOrderUseCase.call(id);
+    if (!existing) {
+      throw new BadRequestException('Pedido não encontrado');
+    }
+    if (isFinalizedDelivery(existing.deliveryStatus)) {
+      throw new ConflictException('Entrega já finalizada');
+    }
 
     const { orderDeliveryStatus, historicoStatusCodigo, statusTexto } =
       await this.resolveDeliveryStatusUseCase.call(statusEntregue);
 
+    this.verificarAssinaturaComprovanteUseCase.call({
+      orderId: id,
+      file,
+      receivedUserImage: dto.received_user_image,
+      validacaoId: dto.validacao_id,
+      assinaturaComprovante: dto.assinatura_comprovante,
+    });
+
+    const clientImage = await this.uploadComprovanteImageUseCase.call({
+      orderId: id,
+      nfNumero: existing.nfNumero,
+      file,
+      receivedUserImage: dto.received_user_image,
+      validacaoId: dto.validacao_id,
+    });
+
     await this.markOrderDeliveredUseCase.call(id, {
-      ...(clientImage ? { receivedUserImage: clientImage } : {}),
+      ...(clientImage ? { receivedUserImage: clientImage, updateImagem: clientImage } : {}),
       ...(signatureImage ? { signatureImage } : {}),
       signatureName,
       latitudeFoto,
@@ -81,7 +159,8 @@ export class DeliverOrderController {
       obs: statusTexto,
       lat: latitudeFoto,
       lon: longitudeFoto,
-      ...(signatureImage ? { imagem: signatureImage } : {}),
+      clientImage,
+      signatureImage,
     });
 
     if (!profile.userId) return ok();

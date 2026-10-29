@@ -1,12 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import type { CreateDeliveryHistoricoInput } from '../models/create-delivery-historico.input';
 import { DeliverOrderRepository } from '../repositories/deliver_order.repository';
 
 @Injectable()
 export class CreateDeliveryHistoricoUseCase {
   constructor(private readonly repository: DeliverOrderRepository) {}
 
-  call(data: Prisma.OrderHistoricoCreateInput) {
-    return this.repository.createHistorico(data);
+  call(input: CreateDeliveryHistoricoInput) {
+    const { clientImage, signatureImage, ...historico } = input;
+    const imagem = clientImage || signatureImage || undefined;
+    return this.repository.createHistorico({
+      ...historico,
+      ...(imagem ? { imagem } : {}),
+    });
   }
 }

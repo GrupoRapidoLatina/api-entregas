@@ -27,6 +27,7 @@ import { PartnersModule } from './features/partners/partners.module';
 import { VerifyEmailModule } from './features/verify_email/verify_email.module';
 import { StatusModule } from './features/status/status.module';
 import { UploadModule } from './features/upload/upload.module';
+import { ValidarComprovanteModule } from './features/validar_comprovante/validar_comprovante.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { UploadModule } from './features/upload/upload.module';
     SessionAuthModule,
     InfraModule,
     UploadModule,
+    ValidarComprovanteModule,
     LoginModule,
     RegisterModule,
     ForgotPasswordModule,

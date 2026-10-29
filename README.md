@@ -23,7 +23,7 @@ Manter o mesmo contrato do legado (`application/x-www-form-urlencoded` + `multip
 - Node 20+
 - NestJS + TypeScript
 - Prisma 5 + MySQL (`mysql2`)
-- Upload de imagens (`FileUploadService` via FTP legado)
+- Upload de imagens (`FileUploadService` via DigitalOcean Spaces)
 - FCM (`firebase-admin`) para push
 
 ## Setup local (Docker — recomendado)
@@ -46,7 +46,7 @@ Detalhes: [docs/LOCAL.md](docs/LOCAL.md)
 ### Alternativa: API no host + MySQL no Docker
 
 ```bash
-# configure o .env (DATABASE_URL, FTP_*, FCM_*, etc.)
+# configure o .env (DATABASE_URL, SPACES_*, FCM_*, COMPROVANTE_*, etc.)
 npm install
 npm run local:setup
 npm run start:dev
@@ -55,7 +55,7 @@ npm run start:dev
 ## Setup HML/PROD
 
 ```bash
-# configure o .env com DATABASE_URL real, FTP_* (upload) e FCM_*
+# configure o .env com DATABASE_URL real, SPACES_* (upload) e FCM_*
 
 npm install
 npx prisma generate   # só gera client local — não altera o MySQL

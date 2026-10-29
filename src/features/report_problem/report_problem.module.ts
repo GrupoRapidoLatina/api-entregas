@@ -7,6 +7,7 @@ import { MarkOrderAfterReportUseCase } from './use-cases/mark_order_after_report
 import { CreateReportHistoricoUseCase } from './use-cases/create_report_historico.use-case';
 import { FindCustomerUseCase } from './use-cases/find_customer.use-case';
 import { ChangeReportProblemStatusUseCase } from './use-cases/change_report_problem_status.use-case';
+import { UploadReportImageUseCase } from './use-cases/upload_report_image.use-case';
 import { ReportProblemRepository } from './repositories/report_problem.repository';
 import { StatusModule } from '../status/status.module';
 
@@ -21,7 +22,8 @@ import { StatusModule } from '../status/status.module';
     CreateReportHistoricoUseCase,
     FindCustomerUseCase,
     ChangeReportProblemStatusUseCase,
+    UploadReportImageUseCase,
     ReportProblemRepository,
   ],
 })
-export class ReportProblemModule { }
+export class ReportProblemModule {}

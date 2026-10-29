@@ -7,6 +7,8 @@ import { CreateDeliveryHistoricoUseCase } from './use-cases/create_delivery_hist
 import { CreateDeliveryNotificationUseCase } from './use-cases/create_delivery_notification.use-case';
 import { FindCustomerUseCase } from './use-cases/find_customer.use-case';
 import { FindDriverDeliveryAlertUseCase } from './use-cases/find_driver_delivery_alert.use-case';
+import { UploadComprovanteImageUseCase } from './use-cases/upload_comprovante_image.use-case';
+import { VerificarAssinaturaComprovanteUseCase } from './use-cases/verificar_assinatura_comprovante.use-case';
 import { DeliverOrderRepository } from './repositories/deliver_order.repository';
 import { StatusModule } from '../status/status.module';
 
@@ -21,6 +23,8 @@ import { StatusModule } from '../status/status.module';
     CreateDeliveryNotificationUseCase,
     FindCustomerUseCase,
     FindDriverDeliveryAlertUseCase,
+    VerificarAssinaturaComprovanteUseCase,
+    UploadComprovanteImageUseCase,
     DeliverOrderRepository,
   ],
 })
